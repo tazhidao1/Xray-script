@@ -1,125 +1,32 @@
-中文 | <a href="README.en.md">English</a>
-# Xray-XHTTP 管理脚本 :sparkles:
+# Xray-REALITY 管理脚本
 
-* 一个纯 Shell 编写的 XHTTP 管理脚本
-* 可选配置:
-  * mKCP (VLESS-mKCP-seed)
-  * Vision (VLESS-Vision-REALITY)
-  * XHTTP (VLESS-XHTTP-REALITY)
-  * trojan (Trojan-XHTTP-REALITY)
-  * Fallback (包含 VLESS-Vision-REALITY、VLESS-XHTTP-REALITY)
-  * SNI (包含 Vision_REALITY、XHTTP_REALITY、XHTTP_TLS)
-* SNI 配置由 Nginx 实现 SNI 分流，适合过 CDN、上下行分离、多网站共存等需求
-* SNI 分享链接实现了上下行分离(上行 xhttp+TLS+CDN | 下行 xhttp+Reality、上行 xhttp+Reality | 下行 xhttp+TLS+CDN)
-* 规则配置与自填:
-  * 禁止 bittorrent 流量(可选)
-  * 禁止回国 ip 流量(可选)
-  * 屏蔽广告(可选)
-  * 添加自定义 WARP Proxy 分流
-  * 添加自定义屏蔽分流
-* 开关 Cloudflare WARP Proxy( :whale: Docker 部署)
-* 开关 geodata 自动更新功能
-* xray 端口默认与自填:
-  * VLESS-mKCP: 随机生成
-  * ALL-REALITY: 443
-* UUID 默认与自填:
-  * 随机生成
-  * 自定义输入标准 UUID
-  * 非标准 UUID 映射转化为 UUID
-* kcp(seed) 和 trojan(password) 默认与自填:
-  * 随机生成(格式: cw-GEMDYgwIV3_g#)
-  * 自定义输入
-* target 默认与自填:
-  * 随机在 serverNames.json 中获取
-  * 实现自填 target 的 TLSv1.3 与 H2 验证
-  * 实现自填 target 的 serverNames 自动获取
-* shortId 默认与自填:
-  * 随机生成(默认两个 shortId 例如: 01234567, 0123456789abcdef)
-  * 实现自填 shortId
-  * 实现输入值为 0 到 8, 则自动生成对 0-16 长度的 shortId
-  * 支持逗号分隔的多个值
-* path 默认与自填:
-  * 随机生成(格式: /8ugSUeNJ.9OEnTErb.dVZMUAFu)
-  * 自定义输入(格式: /8ugSUeNJ, 加不加 `/` 都可以)
+* 一个纯 Shell 编写的 REALITY 管理脚本
+* 使用 VLESS-XTLS-uTLS-REALITY 配置
+* 实现使用 Xray 前置偷自己证书，适合没有其他网站需求
+* 实现使用 Nginx SNI 分流，Xray 后置偷自己证书，适合多网站共存需求
+* 可自定义输入 UUID ，非标准 UUID 将使用 `Xray uuid -i "自定义字符串"` 进行映射转化为 UUIDv5
+* 默认配置禁广告、bt
+* 默认使用 Docker 部署 Cloudreve 作为个人网盘使用
+* 默认使用 Docker 部署 Cloudflare WARP Proxy
+* 回国流量默认走 Cloudflare WARP Proxy
+* 实现 geo 文件的自动更新
 
-## 问题
+## 注意事项
 
-1. 如果安装成功，但无法使用，请检查服务器是否开启对应端口。
-2. 使用 SNI 配置前，请确保 VPS 的 HTTP(80) 与 HTTPS(443) 端口开放。
-3. 使用 SNI 配置前，请不要开启 CDN 保护，不然无法正常申请 SSL 证书。
-4. 上下行分离详情请看 [XHTTP: Beyond REALITY][XHTTP] 与 [xhttp 五合一配置][xhttp 五合一配置] 了解。
+1. 此脚本需要一个解析到服务器的域名。
 
-可通过 `https://tcp.ping.pe/ip:port` 验证服务器端口是否开放。
+2. 此脚本安装时间较长。
 
-## 分享链接
+3. 此脚本设计为个人VPS用户使用。
 
-基于[VMessAEAD / VLESS 分享链接标准提案](https://github.com/XTLS/Xray-core/discussions/716)与[v2rayN](https://github.com/2dust/v2rayN)实现，如果其他客户端无法正常使用，请自行根据分享链接进行修改。
-
-SNI 配置中，CDN 的分享链接 Alpn 默认为 H2，如有 H3 需求，请自行在客户端修改。
-
-## 如何使用
-
-* 获取
-
-  ```sh
-  wget --no-check-certificate -O ${HOME}/Xray-script.sh https://raw.githubusercontent.com/zxcvos/Xray-script/main/xhttp.sh
-  ```
-  
-* 使用
-
-  ```sh
-  bash ${HOME}/Xray-script.sh
-  ```
-
-* 快速启动
-
-  ```sh
-  wget --no-check-certificate -O ${HOME}/Xray-script.sh https://raw.githubusercontent.com/zxcvos/Xray-script/main/xhttp.sh && bash ${HOME}/Xray-script.sh
-  ```
-
-## 脚本界面
-
-```sh
- __   __  _    _   _______   _______   _____  
- \ \ / / | |  | | |__   __| |__   __| |  __ \ 
-  \ V /  | |__| |    | |       | |    | |__) |
-   > <   |  __  |    | |       | |    |  ___/ 
-  / . \  | |  | |    | |       | |    | |     
- /_/ \_\ |_|  |_|    |_|       |_|    |_|     
-
-Copyright (C) zxcvos | https://github.com/zxcvos/Xray-script
-
--------------------------------------------
-Xray       : v24.12.31
-CONFIG     : VLESS-XHTTP-REALITY
-WARP Proxy : 已启动
--------------------------------------------
-
---------------- Xray-script ---------------
- Version      : v2024-12-31
- Description  : Xray 管理脚本
------------------ 装载管理 ----------------
-1. 完整安装
-2. 仅安装/更新
-3. 卸载
------------------ 操作管理 ----------------
-4. 启动
-5. 停止
-6. 重启
------------------ 配置管理 ----------------
-7. 分享链接与二维码
-8. 信息统计
-9. 管理配置
--------------------------------------------
-0. 退出
-```
+4. 建议在纯净的系统上使用此脚本 (VPS控制台-重置系统，或使用 DD 脚本重装系统)。
 
 ## 已测试系统
 
 | Platform | Version    |
 | -------- | ---------- |
 | Debian   | 10, 11, 12 |
-| Ubuntu   | 20, 22, 24 |
+| Ubuntu   | 20, 22, 23 |
 | CentOS   | 7, 8, 9    |
 | Rocky    | 8, 9       |
 
@@ -127,17 +34,23 @@ WARP Proxy : 已启动
 
 其他 Debian 基系统与 Red Hat 基系统可能能用，但未测试过，可能存在问题。
 
+如果遇到 Docker 安装失败问题，请自行安装 Docker 后，将代码 `function install()` 函数中的 `install_docker` 注释再运行即可。
+
+例如:
+
+```sh
+sed -i 's/install_docker$/# install_docker/' ${HOME}/Xray-script.sh
+```
+
 ## 安装时长说明
 
-SNI 配置适合安装一次后长期使用，不适合反复重置系统安装，这会消耗您的大量时间。如果需要更换配置和域名等，在管理界面都有相应的选项。
-
-更换为非 SNI 配置后，Nginx 将停止服务，但会继续保留在本机，再启用 SNI 配置时不会进行重新安装。
+此脚本适合安装一次后长期使用，不适合反复重置系统安装，这会消耗您的大量时间。如果需要更换配置和域名等，在管理界面都有相应的选项。
 
 ### 安装时长参考
 
 安装流程：
 
-更新系统管理包->安装依赖->安装Docker->安装Cloudreve->[安装Cloudflare-warp]->安装Xray->安装Nginx->申请证书->配置文件
+更新系统管理包->安装依赖->安装Docker->安装Cloudreve->安装Cloudflare-warp->安装Xray->安装Nginx->申请证书->配置文件
 
 **这是一台单核1G的服务器的平均安装时长，仅供参考：**
 
@@ -153,9 +66,9 @@ SNI 配置适合安装一次后长期使用，不适合反复重置系统安装�
 | 申请证书            | 1-2分钟   |
 | 配置文件            | <100毫秒  |
 
-### 为什么 SNI 配置安装时间那么长？
+### 为什么脚本安装时间那么长？
 
-脚本的 Nginx 是采用源码编译的形式进行管理安装。
+脚本的Nginx是采用源码编译的形式进行管理安装。
 
 编译相比直接安装二进制文件的优点有：
 
@@ -164,9 +77,61 @@ SNI 配置适合安装一次后长期使用，不适合反复重置系统安装�
 
 缺点就是编译耗时长。
 
+## 如何使用
+
+### 1.获取/更新脚本
+
+* wget
+
+  ```sh
+  wget --no-check-certificate -O ${HOME}/Xray-script.sh https://raw.githubusercontent.com/zxcvos/Xray-script/main/myself.sh
+  ```
+
+* curl
+
+  ```sh
+  curl -fsSL -o ${HOME}/Xray-script.sh https://raw.githubusercontent.com/zxcvos/Xray-script/main/myself.sh
+  ```
+
+### 2.执行脚本
+
+```sh
+bash ${HOME}/Xray-script.sh
+```
+
+### 3.脚本界面
+
+```sh
+--------------- Xray-script ---------------
+ Version      : v2023-12-31(beta)
+ Title        : Xray 管理脚本
+ Description  : Xray 前置或 Nginx 分流
+              : reality dest 目标为自建伪装站
+----------------- 装载管理 ----------------
+1. 安装
+2. 更新
+3. 卸载
+----------------- 操作管理 ----------------
+4. 启动
+5. 停止
+6. 重启
+----------------- 配置管理 ----------------
+101. 查看配置
+102. 修改 id
+103. 修改 x25519
+104. 修改 shortIds
+105. 重置 Cloudreve 初始账号密码
+----------------- 其他选项 ----------------
+201. 更新至最新稳定版内核
+202. 卸载多余内核
+203. 修改 ssh 端口
+204. 内核参数调优
+-------------------------------------------
+```
+
 ## 安装位置
 
-**Xray-script:** `/usr/local/xray-script`
+**Xray-script:** `/usr/local/etc/zxcvos_xray_script`
 
 **Nginx:** `/usr/local/nginx`
 
@@ -178,7 +143,7 @@ SNI 配置适合安装一次后长期使用，不适合反复重置系统安装�
 
 ## 依赖列表
 
-使用 SNI 配置时，脚本可能自动安装以下依赖：
+脚本可能自动安装以下依赖：
 | 用途                            | Debian基系统                         | Red Hat基系统       |
 | ------------------------------- | ------------------------------------ | ------------------- |
 | yumdb set(标记包手动安装)       |                                      | yum-utils           |
@@ -229,19 +194,21 @@ SNI 配置适合安装一次后长期使用，不适合反复重置系统安装�
 
 [REALITY][REALITY]
 
-[XHTTP: Beyond REALITY][XHTTP]
-
-[integrated-examples][lxhao61/integrated-examples]
-
-[xhttp 五合一配置][xhttp 五合一配置]
+[chika0801 Xray 配置文件模板][chika0801-Xray-examples]
 
 [部署 Cloudflare WARP Proxy][haoel]
 
 [cloudflare-warp 镜像][e7h4n]
 
+[WARP 一键脚本][fscarmen]
+
 [V2Ray 路由规则文件加强版][v2ray-rules-dat]
 
 [kirin10000/Xray-script][kirin10000/Xray-script]
+
+[使用Nginx进行SNI分流并完美和网站共存][nginx-sni-dispatcher]
+
+[[小白参阅系列] 第〇篇 手搓 Nginx 安装][post-37224-1]
 
 [Cloudreve][cloudreve]
 
@@ -249,11 +216,12 @@ SNI 配置适合安装一次后长期使用，不适合反复重置系统安装�
 
 [Xray-core]: https://github.com/XTLS/Xray-core (THE NEXT FUTURE)
 [REALITY]: https://github.com/XTLS/REALITY (THE NEXT FUTURE)
-[XHTTP]: https://github.com/XTLS/Xray-core/discussions/4113 (XHTTP: Beyond REALITY)
-[lxhao61/integrated-examples]: https://github.com/lxhao61/integrated-examples (以 V2Ray（v4 版） 或 Xray、Nginx 或 Caddy（v2 版）、Hysteria 等打造常用科学上网的优化配置及最优组合示例，且提供集成特定插件的 Caddy（v2 版） 文件，分享给大家食用及自己备份。)
-[xhttp 五合一配置]: https://github.com/XTLS/Xray-core/discussions/4118 (xhttp 五合一配置 \( reality 直连与过 CDN 共存, 附小白可抄的配置\))
+[chika0801-Xray-examples]: https://github.com/chika0801/Xray-examples (chika0801 Xray 配置文件模板)
 [haoel]: https://github.com/haoel/haoel.github.io#943-docker-%E4%BB%A3%E7%90%86 (使用 Docker 快速部署 Cloudflare WARP Proxy)
 [e7h4n]: https://github.com/e7h4n/cloudflare-warp (cloudflare-warp 镜像)
+[fscarmen]: https://github.com/fscarmen/warp (WARP 一键脚本)
 [v2ray-rules-dat]: https://github.com/Loyalsoldier/v2ray-rules-dat (V2Ray 路由规则文件加强版)
 [kirin10000/Xray-script]: https://github.com/kirin10000/Xray-script (kirin10000/Xray-script)
+[nginx-sni-dispatcher]: https://blog.xmgspace.me/archives/nginx-sni-dispatcher.html (使用Nginx进行SNI分流并完美和网站共存)
+[post-37224-1]: https://www.nodeseek.com/post-37224-1 (第〇篇 手搓 Nginx 安装)
 [cloudreve]: https://github.com/cloudreve/cloudreve (cloudreve)

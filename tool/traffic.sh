@@ -3,13 +3,13 @@
 _APISERVER=127.0.0.1:32768
 _XRAY=/usr/local/bin/xray
 
-apidata() {
+apidata () {
     local ARGS=
     if [[ $1 == "reset" ]]; then
-        ARGS="-reset=true"
+      ARGS="-reset=true"
     fi
-    $_XRAY api statsquery --server=$_APISERVER "${ARGS}" |
-        awk '{
+    $_XRAY api statsquery --server=$_APISERVER "${ARGS}" \
+    | awk '{
         if (match($1, /"name":/)) {
             f=1; gsub(/^"|link"|,$/, "", $2);
             split($2, p,  ">>>");
@@ -34,9 +34,9 @@ print_sum() {
         END{
             printf "SUM->up:\t%.0f\nSUM->down:\t%.0f\nSUM->TOTAL:\t%.0f\n", us, ds, us+ds;
         }')
-    echo -e "${SORTED}\n${SUM}" |
-        numfmt --field=2 --suffix=B --to=iec |
-        column -t
+    echo -e "${SORTED}\n${SUM}" \
+    | numfmt --field=2 --suffix=B --to=iec \
+    | column -t
 }
 
 DATA=$(apidata $1)
