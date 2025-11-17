@@ -121,7 +121,8 @@ EOF
       --accountkeylength ec-256 \
       --server zerossl \
       --ocsp \
-      --debug
+      --debug \
+      --force
     # 恢复原始配置
     mv -f /usr/local/nginx/conf/nginx.conf.bak /usr/local/nginx/conf/nginx.conf
     print_error "ECC 证书申请失败。"
