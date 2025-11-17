@@ -208,7 +208,7 @@ function backup_files() {
 # 编译依赖项
 function compile_dependencies() {
   # 常规依赖
-  _install ca-certificates curl wget gcc make git openssl tzdata  socat
+  _install ca-certificates curl wget gcc make git openssl tzdata
   case "$(_os)" in
   centos)
     # 工具链
