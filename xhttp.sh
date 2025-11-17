@@ -946,8 +946,8 @@ function generate_server_names() {
 
 function generate_xray_x25519() {
   local xray_x25519=$(xray x25519)
-  PRIVATE_KEY=$(echo ${xray_x25519} | sed -ne '1s/.*:\s*//p')
-  PUBLIC_KEY=$(echo ${xray_x25519} |  sed -ne '2s/.*:\s*//p')
+  PRIVATE_KEY=$(echo "${xray_x25519}" | sed -ne '1s/.*:\s*//p')
+  PUBLIC_KEY=$(echo "${xray_x25519}" |  sed -ne '2s/.*:\s*//p')
   jq --arg privateKey "${PRIVATE_KEY}" '.privateKey = $privateKey' /usr/local/xray-script/config.json >/usr/local/xray-script/tmp.json && mv -f /usr/local/xray-script/tmp.json /usr/local/xray-script/config.json
   jq --arg publicKey "${PUBLIC_KEY}" '.publicKey = $publicKey' /usr/local/xray-script/config.json >/usr/local/xray-script/tmp.json && mv -f /usr/local/xray-script/tmp.json /usr/local/xray-script/config.json
 }
